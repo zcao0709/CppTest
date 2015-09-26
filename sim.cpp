@@ -2,7 +2,7 @@
 #include <algorithm>
 
 using namespace std;
-
+/*
 int main() {
 	unsigned long begin;
 	unsigned long end;
@@ -71,3 +71,4 @@ int main() {
 	delete [] kill;
 	return 0;
 }
+*/

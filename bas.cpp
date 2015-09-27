@@ -2,16 +2,16 @@
 
 using namespace std;
 
-static void calc(unsigned long *minimumMax, unsigned long *money, int s, int e,
-				unsigned long sum, int split) {
+static void calc(unsigned int *minimumMax, unsigned int *money, int s, int e,
+				unsigned int sum, int split) {
 	//cout << s << ',' << e << ',' << sum << ',' << split << endl;
 	if (split == 1) {
 		if (*minimumMax == 0 || *minimumMax < sum)
 		*minimumMax = sum;
 		return;
 	}
-	unsigned long average = sum / split;
-	unsigned long partSum = 0;
+	unsigned int average = sum / split;
+	unsigned int partSum = 0;
 	int i = s;
 	while (i <= e) {
 		partSum += money[i];
@@ -19,7 +19,7 @@ static void calc(unsigned long *minimumMax, unsigned long *money, int s, int e,
 			break;
 		i++;
 	}
-	unsigned long currentMax1, currentMax2, currentMinMax;
+	unsigned int currentMax1, currentMax2, currentMinMax;
 	if (i > s) {
 		currentMax1 = partSum - money[i];
 		calc(&currentMax1, money, i, e, sum-currentMax1, split-1);
@@ -41,31 +41,32 @@ static void calc(unsigned long *minimumMax, unsigned long *money, int s, int e,
 
 	return;
 }
-
+/*
 int main() {
 	int n;
 	cin >> n;
 	int k;
 	cin >> k;
 
-	unsigned long sum = 0;
-	unsigned long *money = new unsigned long[n];
-	unsigned long max = 0;
+	unsigned int sum = 0;
+	unsigned int *money = new unsigned int[n];
+	unsigned int max = 0;
 	for (int i = 0; i < n; i++) {
 		cin >> money[i];
 		if (money[i] == 0) {
 			i--;
-			k--;
+			n--;
 			continue;
 		}
 		sum += money[i];
 		if (max < money[i])
 			max = money[i];
 	}
-	unsigned long minimumMax = 0;
+	cout << "N: " << n << endl;
+	unsigned int minimumMax = 0;
 	if (k == 1)
 		minimumMax = sum;
-	else if (n == k)
+	else if (n <= k)
 		minimumMax = max;
 	else
 		calc(&minimumMax, money, 0, n-1, sum, k);
@@ -73,3 +74,4 @@ int main() {
 	delete [] money;
 	return 0;
 }
+*/

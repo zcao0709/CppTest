@@ -1,8 +1,7 @@
 #include <iostream>
-#include <algorithm>
 
 using namespace std;
-
+/*
 int main() {
 	int n;
 	cin >> n;
@@ -28,11 +27,12 @@ int main() {
 	for (int i = 3; i < n; i++) {
 		unsigned int ai;
 		cin >> ai;
-		unsigned long newS1 = max(max(s1, s2), s3);
+		unsigned long newS1 = max<unsigned long>(max<unsigned long>(s1, s2), s3);
 		s3 = s2 + ai;
 		s2 = s1 + ai;
 		s1 = newS1;
 		//cout << s1 << " " << s2 << " " << s3 << endl;
 	}
-	cout << max(max(s1, s2), s3);
+	cout << max<unsigned long>(max<unsigned long>(s1, s2), s3);
 }
+*/

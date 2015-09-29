@@ -5,6 +5,54 @@
 
 using namespace std;
 
+class direction {
+private:
+	/*
+	 * 0: straight
+	 * 1: turn back
+	 * 2: counter-clockwise
+	 * 3: clockwise
+	 */
+	int type;
+	int start;
+	int end;
+
+public:
+	direction(char a, char c) {
+		if (straignt(a, c))
+			type = 0;
+		else if (turnback(a, c))
+			type = 1;
+		else if (clockwise(a, c))
+			type = 2;
+		else
+			type = 3;
+	}
+
+	int len() {
+		return end - start;
+	}
+
+private:
+	bool straignt(char a, char c) {
+		return a == c;
+	}
+
+	bool turnback(char a, char c) {
+		return (a == 'N' && c == 'S') || (a == 'S' && c == 'N')
+				|| (a == 'E' && c == 'W') || (a == 'W' && c == 'E');
+	}
+
+	bool clockwise(char a, char c) {
+		return (a == 'N' && c == 'E') || (a == 'E' && c == 'S')
+					|| (a == 'S' && c == 'W') || (a == 'W' && c == 'N');
+	}
+
+	bool ctclockwise(char a, char c) {
+		return (a == 'N' && c == 'W') || (a == 'W' && c == 'S')
+					|| (a == 'S' && c == 'E') || (a == 'E' && c == 'N');
+};
+
 class Moves {
 private:
 	list<char> *moves;
@@ -257,9 +305,12 @@ int main() {
 	string s;
 	cin >> s;
 
+	/*
 	Moves *m = new Moves(s);
 	m->traverse();
 	m->print();
-
+	*/
+	list<direction> *d = new list<direction>;
+	for (int i = 0;)
 	return 0;
 }

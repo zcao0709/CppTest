@@ -2,7 +2,7 @@
 #include <algorithm>
 
 using namespace std;
-
+/*
 int main() {
 	unsigned long begin;
 	unsigned long end;
@@ -67,3 +67,4 @@ int main() {
 	cout << max << endl;
 	return 0;
 }
+*/

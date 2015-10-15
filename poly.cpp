@@ -1,8 +1,5 @@
 #include <iostream>
-#include <iterator>
 #include <algorithm>
-#include <list>
-#include <stack>
 
 using namespace std;
 
@@ -42,19 +39,30 @@ class Moves {
 private:
     direction *head;
     direction *tail;
+    int size;
     string raw;
+    int rawLen;
+    int start;
     unsigned int idx;
 
     int total;
 public:
     Moves(string &s) {
         raw = s;
+        rawLen = raw.length();
+        start = 0;
+        for (; start < rawLen; start++) {
+        	if (!turnback(raw[start], raw[rawLen-1-start]))
+        		break;
+        }
         idx = 0;
 
         direction *d = new direction(0, 0);
         head = tail = d;
+        size = 1;
 
         total = 0;
+        //print();
     }
 
     void direct() {
@@ -62,9 +70,10 @@ public:
         //direction *lastCtclockws = NULL;
         direction *lastClockwise = NULL;
         direction *lastTurnback = NULL;
-        for (unsigned int i = 1; i < raw.length(); i++) {
+        for (int i = start; i < rawLen; i++) {
             char c = raw[i];
             int type = addDirection(last, c, i);
+
             if (type == TURNBACK) {
             	if (lastTurnback != NULL) {
             		removeTurnback(lastTurnback);
@@ -94,22 +103,28 @@ public:
             } else {
             	lastClockwise = NULL;
             }
+
             last = raw[tail->idx];
         }
-        print();
         /*
+        print();
+
         removeDoubleClockwise();
         print();
         removeTurnback();
         print();
         removeDoubleClockwise();
         print();
-        */
-        while (head != tail) {
+		*/
+        int lastSize = size;
+        while (1) {
         	removeDoubleCtclockws();
-        	print();
+        	//print();
         	removeTurnback();
-        	print();
+        	//print();
+        	if (head == tail || lastSize == size)
+        		break;
+        	lastSize = size;
         }
         cout << total << endl;
     }
@@ -122,7 +137,7 @@ public:
 
 private:
     void removeDoubleCtclockws() {
-    	cout << "removeDoubleCtclockws" << endl;
+    	//cout << "removeDoubleCtclockws" << endl;
     	direction *lastCtclockws = NULL;
     	for (direction *d = head; d != NULL; d = d->next) {
     		if (d->type == CTCLOCKWS) {
@@ -132,7 +147,7 @@ private:
     				d = removeDoubleCtclockws(d);
     		} else if (d->type == TURNBACK) {
     			d = removeTurnback(d);
-    			print();
+    			//print();
     		} else if (d->type == CLOCKWISE)
     			lastCtclockws = NULL;
 
@@ -148,13 +163,13 @@ private:
     	}
     	int num = 0;
     	d = removeTurnback(mid->prev, d, &num);
-    	cout << "num " << num << endl;
+    	//cout << "num " << num << endl;
     	total += (num * mid->len);
     	return d;
     }
 
     void removeDoubleClockwise() {
-    	cout << "removeDoubleClockwise" << endl;
+    	//cout << "removeDoubleClockwise" << endl;
         direction *lastClockwise = NULL;
         for (direction *d = head; d != NULL; d = d->next) {
             if (d->type == CLOCKWISE) {
@@ -179,14 +194,11 @@ private:
     	//cout << "removing " << raw[d->idx] << " " << d->type << endl;
     	direction *mid = d->prev;
     	d = removeTurnback(mid->prev, d);
-    	//fixAfterDelete(mid);
-    	//if (d != NULL)
-    		//fixAfterDelete(d);
     	return d;
     }
 
     void removeTurnback() {
-    	cout << "removeTurnback" << endl;
+    	//cout << "removeTurnback" << endl;
         for (direction *d = head; d != NULL; d = d->next) {
             if (d->type == TURNBACK)
                 d = removeTurnback(d);
@@ -204,38 +216,25 @@ private:
     }
 
     direction *removeTurnback(direction *left, direction *right, int *num) {
-        cout << "removing " << raw[left->idx] << " " << raw[right->idx] << " " << right->type << endl;
+    	if (!turnback(raw[left->idx], raw[right->idx]))
+    		return right;
+        //cout << "removing " << raw[left->idx] << " " << raw[right->idx] << " " << right->type << endl;
         bool iterable = false;
         if (left->next == right)
         	iterable = true;
-        int len = 1;
-        //if (left->type == STRAIGHT && right->type == STRAIGHT) {
-        	len = min<unsigned int>(left->len, right->len);
-        //}
+        int len = min<unsigned int>(left->len, right->len);
+
         if (num != NULL)
         	*num += len;
         char deleteChar = raw[right->idx];
         if ((left->len -= len) == 0) {
             left = remove(left)->prev;
         }
-        //d = d->next;
-        //if (d->len == 1) {
-            //next = d->next;
-            //right = remove(right);
-        //}
         if ((right->len -= len) == 0) {
-        	//right->len -= len;
-        	//if (right->len == 0) {
-        		//d = d->next;
-        		right = remove(right);
-        	//}
+        	right = remove(right);
         }
-        cout << "removed " << left << " " << right << endl;
-        /*if (left != NULL) {
-        	fixAfterDelete(left->next);
-        	if (left->next != right)
-        		fixAfterDelete(right);
-        }*/
+        //cout << "removed " << left << " " << right << endl;
+
         if (right == NULL || left == NULL) {
         	fixRightDelete(left);
         	fixLeftDelete(right);
@@ -243,17 +242,10 @@ private:
         }
         if (turnback(raw[left->idx], raw[right->idx])
         		&& (raw[right->idx] == deleteChar || iterable)) {
-        	print();
-        	cout << "continue removing" << endl;
+        	//print();
+        	//cout << "continue removing" << endl;
         	return removeTurnback(left, right, num);
         }
-        /*
-        direction *toFix = head;
-        if (left != NULL)
-        	toFix = left->next;
-        if (toFix != right)
-        	fixAfterDelete(toFix);
-        */
         if (left->next == right) {
         	fixRightDelete(left);
         } else {
@@ -300,32 +292,14 @@ private:
         	d->type = d->prev->type;
         	d->len += d->prev->len;
         	remove(d->prev);
-        	/*
-        	if (d->prev->type == 0) {
-        		d->len += d->prev->len;
-        		remove(d->prev);
-        	} else {
-        		d->type = 0;
-        		if (straight(right, raw[d->next->idx])) {
-        			//fixAfterDelete(d->next);
-        			d->len += d->next->len;
-        			remove(d->next);
-        		}
-        	}
-        	*/
         } else {
             int type = TURNBACK;
             if (ctclockwise(left, right))
                 type = CTCLOCKWS;
             else if (clockwise(left, right))
             	type = CLOCKWISE;
-            //if (d->len == 1)
-                d->type = type;
-            //else {
-                //d->len--;
-                //direction *newd = new direction(type, d->idx);
-                //add(newd, d->prev);
-            //}
+
+            d->type = type;
         }
         return d;
     }
@@ -346,7 +320,7 @@ private:
     }
 
     void add(int type, int idx) {
-        cout << "adding " << raw[idx] << " " << type << endl;
+        //cout << "adding " << raw[idx] << " " << type << endl;
         if (type == 0) {
             tail->len++;;
         } else {
@@ -354,22 +328,8 @@ private:
             tail->next = d;
             d->prev = tail;
             tail = d;
+            size++;
         }
-    }
-
-    void add(direction *d, direction *prev) {
-        direction *next = prev->next;
-        d->prev = prev;
-        if (prev == NULL)
-            head = d;
-        else
-            prev->next = d;
-
-        d->next = next;
-        if (next == NULL)
-            tail = d;
-        else
-            next->prev = d;
     }
 
     direction *remove(direction *d) {
@@ -385,6 +345,7 @@ private:
         else
             next->prev = prev;
         delete d;
+        size--;
         return next;
     }
 
@@ -409,14 +370,13 @@ private:
 };
 
 int main() {
-    //int n;
-    //cin >> n;
+    int n;
+    cin >> n;
     string s;
     cin >> s;
 
     Moves *m = new Moves(s);
     m->direct();
-    //m->print();
 
     return 0;
 }

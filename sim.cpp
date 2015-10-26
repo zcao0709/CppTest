@@ -12,8 +12,8 @@ int main() {
 	int n;
 	cin >> n;
 
-	unsigned long fork[n];
-	unsigned long kill[n];
+	unsigned long *fork = new unsigned long[n];
+	unsigned long *kill = new unsigned long[n];
 	for (int i = 0; i < n; i++) {
 		unsigned long f, k;
 		cin >> f;
@@ -39,6 +39,8 @@ int main() {
 	if (n == 0) {
 		cout << 0 << endl;
 		cout << 0 << endl;
+		delete [] fork;
+		delete [] kill;
 		return 0;
 	}
 	int i = 1, j = 0;
@@ -65,6 +67,8 @@ int main() {
 	}
 	cout << min << endl;
 	cout << max << endl;
+	delete [] fork;
+	delete [] kill;
 	return 0;
 }
 */

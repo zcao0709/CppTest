@@ -30,6 +30,7 @@ public:
         right = 0;
         len = 1;
         this->idx = idx;
+
         prev = NULL;
         next = NULL;
     }
